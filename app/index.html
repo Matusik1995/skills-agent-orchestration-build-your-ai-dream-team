@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A focused operational view of project health, ownership, and recent activity.">
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    document.documentElement.classList.add('js');
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to project overview</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-lockup">
+        <p class="eyebrow">Operations / Weekly view</p>
+        <h1>Project Pulse</h1>
+        <p class="subtitle">A clear read on the work moving forward, the work needing attention, and the people carrying it.</p>
+      </div>
+      <div class="header-note" aria-label="Dashboard update status">
+        <span class="pulse-mark" aria-hidden="true"></span>
+        <span>Live project register</span>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content" class="dashboard">
+    <section class="summary" aria-labelledby="summary-heading">
+      <div class="section-intro">
+        <p class="eyebrow">At a glance</p>
+        <h2 id="summary-heading">Team capacity, in view</h2>
+      </div>
+      <dl class="metric-list" aria-label="Project summary">
+        <div class="metric metric-total">
+          <dt>Total projects</dt>
+          <dd id="total-count">--</dd>
+        </div>
+        <div class="metric metric-active">
+          <dt>Active</dt>
+          <dd id="active-count">--</dd>
+        </div>
+        <div class="metric metric-risk">
+          <dt>At risk</dt>
+          <dd id="risk-count">--</dd>
+        </div>
+        <div class="metric metric-blocked">
+          <dt>Blocked</dt>
+          <dd id="blocked-count">--</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="project-section" aria-labelledby="projects-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Portfolio view</p>
+          <h2 id="projects-heading">Project overview</h2>
+        </div>
+        <p class="section-caption">Priorities and latest movement, side by side.</p>
+      </div>
+      <p id="loading-state" class="state-message" role="status">Loading project register...</p>
+      <p id="error-state" class="state-message is-error" role="alert" hidden>We could not load the project register. Please refresh and try again.</p>
+      <div id="project-grid" class="project-grid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Project Pulse <span aria-hidden="true">/</span> Built for thoughtful weekly check-ins</p>
+  </footer>
+
+  <script>
+    const projectGrid = document.querySelector('#project-grid');
+    const loadingState = document.querySelector('#loading-state');
+    const errorState = document.querySelector('#error-state');
+
+    const statusLabels = {
+      active: 'Active',
+      'at-risk': 'At risk',
+      blocked: 'Blocked',
+      complete: 'Complete'
+    };
+
+    const priorityLabels = {
+      high: 'High priority',
+      medium: 'Medium priority',
+      low: 'Low priority'
+    };
+
+    function updateMetric(id, value) {
+      document.querySelector(`#${id}`).textContent = value;
+    }
+
+    function renderSummary(projects) {
+      updateMetric('total-count', projects.length);
+      updateMetric('active-count', projects.filter((project) => project.status === 'active').length);
+      updateMetric('risk-count', projects.filter((project) => project.status === 'at-risk').length);
+      updateMetric('blocked-count', projects.filter((project) => project.status === 'blocked').length);
+    }
+
+    function createProjectCard(project) {
+      const article = document.createElement('article');
+      article.className = 'project-card';
+      article.innerHTML = `
+        <div class="card-topline">
+          <span class="status-badge status-${project.status}"><span class="status-dot" aria-hidden="true"></span>${statusLabels[project.status] || project.status}</span>
+          <span class="priority-label priority-${project.priority}">${priorityLabels[project.priority] || project.priority}</span>
+        </div>
+        <div class="card-body">
+          <h3>${project.name}</h3>
+          <p class="owner"><span class="label">Owner</span> ${project.owner}</p>
+          <div class="activity">
+            <span class="label">Recent activity</span>
+            <p>${project.recentActivity}</p>
+          </div>
+        </div>
+        <span class="card-arrow" aria-hidden="true">&#8599;</span>
+      `;
+      return article;
+    }
+
+    async function loadProjects() {
+      try {
+        const response = await fetch('project-data.json');
+        if (!response.ok) {
+          throw new Error(`Project data request failed: ${response.status}`);
+        }
+        const data = await response.json();
+        if (!Array.isArray(data.projects)) {
+          throw new Error('Project data does not contain a projects array.');
+        }
+        renderSummary(data.projects);
+        data.projects.forEach((project) => projectGrid.appendChild(createProjectCard(project)));
+        loadingState.hidden = true;
+      } catch (error) {
+        loadingState.hidden = true;
+        errorState.hidden = false;
+        console.error(error);
+      }
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>

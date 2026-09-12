@@ -1,0 +1,60 @@
+{
+  "projects": [
+    {
+      "name": "Northstar onboarding",
+      "owner": "Mona Patel",
+      "status": "active",
+      "recentActivity": "Pilot cohort completed its first guided setup.",
+      "priority": "high"
+    },
+    {
+      "name": "Atlas API migration",
+      "owner": "Devon Brooks",
+      "status": "at-risk",
+      "recentActivity": "Two partner endpoints still need contract sign-off.",
+      "priority": "high"
+    },
+    {
+      "name": "Field notes refresh",
+      "owner": "Elena Garcia",
+      "status": "active",
+      "recentActivity": "Content review is underway across the contributor guides.",
+      "priority": "medium"
+    },
+    {
+      "name": "Signal reporting",
+      "owner": "Theo Nguyen",
+      "status": "blocked",
+      "recentActivity": "Waiting on the analytics workspace permissions to land.",
+      "priority": "high"
+    },
+    {
+      "name": "Contributor toolkit",
+      "owner": "Ari Johnson",
+      "status": "active",
+      "recentActivity": "The new starter checklist is ready for team feedback.",
+      "priority": "medium"
+    },
+    {
+      "name": "Release notes archive",
+      "owner": "Priya Shah",
+      "status": "complete",
+      "recentActivity": "The archive is published with quarterly filters enabled.",
+      "priority": "low"
+    },
+    {
+      "name": "Access review",
+      "owner": "Sam Rivera",
+      "status": "at-risk",
+      "recentActivity": "Seven dormant seats are queued for owner confirmation.",
+      "priority": "medium"
+    },
+    {
+      "name": "Quality signals",
+      "owner": "Jamie Lee",
+      "status": "active",
+      "recentActivity": "A first pass on the weekly health score is in testing.",
+      "priority": "low"
+    }
+  ]
+}
